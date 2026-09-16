@@ -6,7 +6,10 @@ namespace _Project.Source
 {
     internal sealed class PlayerController : NetworkBehaviour
     {
+        [SerializeField] private Rigidbody _rigidbody;
         [SerializeField] private float _moveSpeed = 5f;
+
+        private Vector3 _moveDirection;
 
         private void Update()
         {
@@ -43,7 +46,17 @@ namespace _Project.Source
                 direction += Vector3.right;
             }
 
-            transform.position += direction.normalized * (_moveSpeed * Time.deltaTime);
+            _moveDirection = direction.normalized;
+        }
+
+        private void FixedUpdate()
+        {
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            _rigidbody.MovePosition(_rigidbody.position + _moveDirection * (_moveSpeed * Time.fixedDeltaTime));
         }
     }
 }
